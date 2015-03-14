@@ -3,21 +3,27 @@ import ReactCanvas from 'react-canvas'
 import $ from 'jquery'
 
 var Image = ReactCanvas.Image;
-var Group = ReactCanvas.Group
 
 export default class Octopus extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            left: this.props.initLeft,
+            bottom: this.props.initBottom
+        }
+    }
+
+    clear() {
+        this.setState({bottom: this.props.initBottom})
     }
 
     getPos() {
-        var octopus = React.findDOMNode(this.refs.octopus),
-            box = octopus.getBoundingClientRect()
+        var styles = this.getImageStyle()
         return {
-            w: octopus.offsetWidth,
-            h: octopus.offsetHeight,
-            t: octopus.offsetTop,
-            l: box.left
+            w: styles.width,
+            h: styles.height,
+            t: styles.top,
+            l: styles.left
         }
     }
 
@@ -55,19 +61,19 @@ export default class Octopus extends React.Component {
         })
     }
 
-    stop() {
-        $(React.findDOMNode(this.refs.octopus)).stop()
-    }
+    // stop() {
+    //     $(React.findDOMNode(this.refs.octopus)).stop()
+    // }
 
     getImageStyle() {
         return {
             position: 'absolute',
-            left: 50,
-            top: 100,
-            right: 0,
-            bottom: 0,
-            width: 40,
-            height: 28
+            // right: 0,
+            left: this.state.left / 2,
+            top: (this.props.canvasHeight - this.state.bottom - this.props.height) / 2,
+            // bottom: this.state.bottom / 2,
+            width: this.props.width,
+            height: this.props.height
         }
     }
 
@@ -77,6 +83,10 @@ export default class Octopus extends React.Component {
 }
 
 Octopus.defaultProps = {
+    initLeft: 130,
+    initBottom: 225,
+    width: 40,
+    height: 28,
     canvasHeight: 0,
     reverse: false
 }

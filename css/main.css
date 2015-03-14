@@ -3,7 +3,7 @@
   margin: 0 auto;
 }
 
-.canvas {
+/*.canvas {
   height: 450px;
   background: url('../img/background.png');
   position: relative;
@@ -50,7 +50,7 @@
   bottom: 0;
   width: 100%;
   background: url('../img/pipe.png') top;
-}
+}*/
 
 .settings {
   text-align: center;

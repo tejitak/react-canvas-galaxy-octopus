@@ -9,6 +9,7 @@ export default class Loop {
     }
 
     start() {
+        // keep loop while the callback returns true
         var keep = this.callback();
         if(keep) {
             this._timer = raf(this.start.bind(this));

@@ -71,7 +71,8 @@ export default class Canvas extends React.Component {
         switch(this.state.phase) {
             case 'INTRO':
                 this.setState({phase: 'RUNNING', count: 0, pipes: []}, () => {
-                    React.findDOMNode(this.refs.octopus).style.bottom = (this.props.canvasHeight / 2) + "px"
+                    // move to init position
+                    this.refs.octopus.clear()
                     this._loop.start()
                     this._pipeTimer = setInterval(this._createPipe.bind(this), this.props.pipeInterval)
                     this.refs.octopus.jump()
@@ -96,6 +97,14 @@ export default class Canvas extends React.Component {
         if(pipes.length > 1){
             pipes.splice(0, 1)
         }
+        console.log({
+            id: lastIndex + 1,
+            topHeight: topHeight,
+            bottomHeight: bottomHeight,
+            gapHeight: this.props.gapHeight,
+            pipeInterval: this.props.pipeInterval,
+            canvasWidth: this.props.canvasWidth
+        })
         this.setState({pipes: pipes.concat({
             id: lastIndex + 1,
             topHeight: topHeight,
@@ -121,23 +130,7 @@ export default class Canvas extends React.Component {
         this.setState({count: count})
     }
 
-    componentDidMount() {
-    }
-
-    getTitleStyle() {
-        return {
-            fontFace: FontFace('Georgia'),
-            fontSize: 22,
-            lineHeight: 28,
-            height: 28,
-            marginTop: 20,
-            color: '#fff',
-            textAlign: 'center'
-        }
-    }
-
-
-    getPageStyle() {
+    getGroupStyle() {
         return {
             position: 'absolute',
             left: 0,
@@ -147,7 +140,7 @@ export default class Canvas extends React.Component {
         }
     }
 
-    getImageStyle() {
+    getBgImageStyle() {
         return {
             position: 'absolute',
             left: 0,
@@ -162,8 +155,8 @@ export default class Canvas extends React.Component {
     render() {
         return (
             <Surface top={0} left={0} width={this.props.canvasWidth} height={this.props.canvasHeight} enableCSSLayout={true}>
-                <Image src='/img/background.png' style={this.getImageStyle()} fadeIn={true} />
-                <Group style={this.getPageStyle()}>
+                <Image src='/img/background.png' style={this.getBgImageStyle()} fadeIn={true} />
+                <Group style={this.getGroupStyle()}>
                     <Counter count={this.state.count} />
                     <Octopus ref="octopus" reverse={this.props.setting.reverseGravity} canvasHeight={this.props.canvasHeight}/> 
                     {this.state.pipes.map(
