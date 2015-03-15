@@ -2,7 +2,7 @@ import React from 'react'
 import Canvas from './Canvas'
 import Setting from './settings/Setting'
 
-// position scale patch
+// FIXME: temp patch for react canvas position scale
 import CanvasUtil from 'react-canvas/lib/CanvasUtils'
 var _drawImage = CanvasUtil.drawImage
 CanvasUtil.drawImage = function(ctx, image, x, y, width, height, options) {

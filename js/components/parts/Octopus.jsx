@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactCanvas from 'react-canvas'
+import Animate from '../../util/Animate'
 
 var Image = ReactCanvas.Image;
 
@@ -10,75 +11,70 @@ export default class Octopus extends React.Component {
             left: this.props.initLeft,
             top: this.props.initTop
         }
+        // react state animation wrapper
+        this._animate = new Animate(this)
     }
 
     clear() {
-        this.setState({top: this.props.initTop})
+        return new Promise((resolve, reject) => {
+            this.setState({top: this.props.initTop}, () => {
+                resolve()
+            })
+        })
     }
 
     getPos() {
-        var styles = this.getImageStyle()
         return {
-            w: styles.width,
-            h: styles.height,
-            t: styles.top,
-            l: styles.left
+            l: this.state.left,
+            t: this.state.top,
+            w: this.props.width,
+            h: this.props.height
         }
     }
 
     fall() {
         return new Promise((resolve, reject) => {
-            // var octopus = React.findDOMNode(this.refs.octopus),
-            //     $octopus = $(octopus),
-            //     reverse = this.props.reverse,
-            //     octopusH = this.getPos().h,
-            //     canvasH = this.props.canvasHeight,
-            //     octopusBottom = parseInt(octopus.style.bottom)
-            // var distance = reverse ? canvasH - octopusBottom - octopusH : octopusBottom
-            // var totalFallTime = 1000/*time for fall*/ * distance / canvasH
-            // $octopus.stop().animate({
-            //     bottom: reverse ? canvasH - octopusH : 0
-            // }, totalFallTime, 'linear', () => {
-            //     resolve()
-            // }).css('transform', 'rotate(' + (reverse ? '-' : '') + '90deg)')
-            var pos = this.getPos()
-            console.log("fall start")
-            resolve()
+            var pos = this.getPos(),
+                canvasH = this.props.canvasHeight,
+                reverse = this.props.reverse,
+                distance = reverse ? pos.t : canvasH - pos.t - pos.h,
+                totalFallTime = 1000/*time for fall*/ * distance / canvasH
+            this._animate
+                .stop()
+                .linear('top', reverse ? 0 : canvasH - pos.h, totalFallTime)
+                .then(resolve)
         })
     }
 
     jump() {
         return new Promise((resolve, reject) => {
-            // var $octopus = $(React.findDOMNode(this.refs.octopus)),
-            //     reverse = this.props.reverse
-            // $octopus.css('transform', 'rotate(' + (reverse ? '' : '-') + '20deg)').stop().animate({
-            //     bottom: (reverse ? '-' : '+') + '=60px'
-            // }, 200, () => {
-            //     $octopus.css('transform', 'rotate(0deg)').stop().animate({
-            //         bottom: (reverse ? '+' : '-') + '=60px'
-            //     }, 300, 'linear', () => {
-            //         this.fall().then(resolve)
-            //     })
-            // })
-            console.log("jump with reverse :" + this.props.reverse)
-            resolve()
+            var distance = 60, 
+                operator = this.props.reverse ? -1 : 1
+            this._animate
+                .stop()
+                .linear('top', this.state.top - (distance * operator), 200)
+                .then(() => {
+                    this._animate.linear('top', this.state.top + (distance * operator), 300)
+                        .then(() => {
+                            this.fall().then(resolve)
+                        })
+                })
         })
     }
 
     stop() {
-    //     $(React.findDOMNode(this.refs.octopus)).stop()
+        this._animate.stop()
     }
 
     getImageStyle() {
+        var pos = this.getPos()
         return {
             position: 'absolute',
-            // right: 0,
-            left: this.state.left,
-            top: this.state.top,
-            // top: (this.props.canvasHeight - this.state.bottom - this.props.height) / 2,
-            // bottom: this.state.bottom / 2,
-            width: this.props.width,
-            height: this.props.height
+            zIndex: 4,  
+            left: pos.l,
+            top: pos.t,
+            width: pos.w,
+            height: pos.h
         }
     }
 

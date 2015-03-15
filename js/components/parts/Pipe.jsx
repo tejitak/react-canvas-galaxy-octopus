@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactCanvas from 'react-canvas'
-import Loop from '../../util/Loop'
+import Animate from '../../util/Animate'
 
 var Group = ReactCanvas.Group
 var Image = ReactCanvas.Image;
@@ -12,26 +12,21 @@ export default class Pipe extends React.Component {
         this.state = {
             x: this.props.canvasWidth
         }
+        // react state animation wrapper
+        this._animate = new Animate(this)
     }
 
     componentDidMount() {
-        this._loop = new Loop(this.move.bind(this))
-        this._loop.start()
+        // strat moving animation
+        this._animate.linear('x', -this.props.pipeWidth, this.props.pipeInterval * 2)
     }
 
     componentWillUnmount() {
         this.stop()
     }
-
-    move() {
-        var progress = this._loop.timeDiff() / (this.props.pipeInterval * 2),
-            pw = this.props.pipeWidth,
-            distance = this.props.canvasWidth + pw,
-            x = (distance - (progress * distance)) - pw
-        if(x > -pw) {
-            this.setState({x: x})
-            return true
-        }
+    
+    stop() {
+        this._animate.stop()
     }
 
     getGapPos() {
@@ -41,10 +36,6 @@ export default class Pipe extends React.Component {
             t: this.props.topHeight,
             l: this.state.x
         }
-    }
-
-    stop() {
-        this._loop.end()
     }
 
     getGroupStyle() {

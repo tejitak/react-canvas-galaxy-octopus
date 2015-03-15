@@ -36,6 +36,7 @@ export default class Canvas extends React.Component {
                 // successfully jumped
                 this._incrementCount()
             }
+            // keep loop
             return true
         }        
     }
@@ -44,12 +45,12 @@ export default class Canvas extends React.Component {
     detectCollision() {
         var reverse = this.props.setting.reverseGravity,
             canvasH = this.props.canvasHeight,
-            octopusPos = this.refs.octopus.getPos()
-        if(reverse ? octopusPos.t === 0 : (octopusPos.t + octopusPos.h) === canvasH){
+            octopusPos = this.refs.octopus.getPos(),
+            hitBuf = 10
+        if(reverse ? octopusPos.t < hitBuf : (octopusPos.t + octopusPos.h) > canvasH - hitBuf){
             return {state: "HIT"}
         }
         // first pipe data
-        // var pipe = this.state.pipes[0]
         var pipeId = this.state.count + 1,
             pipe = this.refs[pipeId]
         if(pipe){
@@ -58,11 +59,9 @@ export default class Canvas extends React.Component {
             if((octopusPos.l + octopusPos.w) >= gapPos.l && octopusPos.l <= (gapPos.l + gapPos.w)){
                 // detect bottom to top range
                 if(octopusPos.t < gapPos.t || (octopusPos.t + octopusPos.h) > gapPos.t + gapPos.h){
-                    console.log("HIT with: " + pipeId)
                     return {state: "HIT"}
                 }
             } else if(octopusPos.l >= (gapPos.l + gapPos.w)){
-                console.log("HIT with: " + pipeId)
                 return {state: "SUCCESS"}
             }
         }
@@ -76,10 +75,11 @@ export default class Canvas extends React.Component {
             case 'INTRO':
                 this.setState({phase: 'RUNNING', count: 0, pipes: []}, () => {
                     // move to init position
-                    this.refs.octopus.clear()
-                    this._loop.start()
-                    this._pipeTimer = setInterval(this._createPipe.bind(this), this.props.pipeInterval)
-                    this.refs.octopus.jump()
+                    this.refs.octopus.clear().then(() => {
+                        this._loop.start()
+                        this._pipeTimer = setInterval(this._createPipe.bind(this), this.props.pipeInterval)
+                        this.refs.octopus.jump()
+                    })
                 })
                 break
             case 'RUNNING':
@@ -101,14 +101,6 @@ export default class Canvas extends React.Component {
         if(pipes.length > 1){
             pipes.splice(0, 1)
         }
-        console.log({
-            id: lastIndex + 1,
-            topHeight: topHeight,
-            bottomHeight: bottomHeight,
-            gapHeight: this.props.gapHeight,
-            pipeInterval: this.props.pipeInterval,
-            canvasWidth: this.props.canvasWidth
-        })
         this.setState({pipes: pipes.concat({
             id: lastIndex + 1,
             topHeight: topHeight,
