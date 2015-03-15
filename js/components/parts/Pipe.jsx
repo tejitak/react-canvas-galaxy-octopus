@@ -24,7 +24,7 @@ export default class Pipe extends React.Component {
     componentWillUnmount() {
         this.stop()
     }
-    
+
     stop() {
         this._animate.stop()
     }
@@ -71,8 +71,8 @@ export default class Pipe extends React.Component {
     render() {
         return (
             <Group style={this.getGroupStyle()}>
-                <Image src='/img/pipe.png' style={this.getTopHalfStyle()} />
-                <Image src='/img/pipe.png' style={this.getBottomHalfStyle()} />
+                <Image src='../img/pipe.png' style={this.getTopHalfStyle()} />
+                <Image src='../img/pipe.png' style={this.getBottomHalfStyle()} />
             </Group>
         )
     }
