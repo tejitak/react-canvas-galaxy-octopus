@@ -34,7 +34,7 @@ export default class Canvas extends React.Component {
                 this._fail()
             }else if(res.state === 'SUCCESS'){
                 // successfully jumped
-                this._updateCount(res.count)
+                this._incrementCount()
             }
             return true
         }        
@@ -49,17 +49,21 @@ export default class Canvas extends React.Component {
             return {state: "HIT"}
         }
         // first pipe data
-        var pipe = this.state.pipes[0]
+        // var pipe = this.state.pipes[0]
+        var pipeId = this.state.count + 1,
+            pipe = this.refs[pipeId]
         if(pipe){
-            var gapPos = this.refs[pipe.id].getGapPos()
+            var gapPos = this.refs[pipeId].getGapPos()
             // detect left to right range
             if((octopusPos.l + octopusPos.w) >= gapPos.l && octopusPos.l <= (gapPos.l + gapPos.w)){
                 // detect bottom to top range
                 if(octopusPos.t < gapPos.t || (octopusPos.t + octopusPos.h) > gapPos.t + gapPos.h){
+                    console.log("HIT with: " + pipeId)
                     return {state: "HIT"}
                 }
             } else if(octopusPos.l >= (gapPos.l + gapPos.w)){
-                return {state: "SUCCESS", count: pipe.id}
+                console.log("HIT with: " + pipeId)
+                return {state: "SUCCESS"}
             }
         }
     }
@@ -126,8 +130,8 @@ export default class Canvas extends React.Component {
     }
 
     // update counter
-    _updateCount(count) {
-        this.setState({count: count})
+    _incrementCount() {
+        this.setState({count: this.state.count + 1})
     }
 
     getGroupStyle() {
@@ -156,8 +160,8 @@ export default class Canvas extends React.Component {
         return (
             <Surface top={0} left={0} width={this.props.canvasWidth} height={this.props.canvasHeight} enableCSSLayout={true}>
                 <Image src='/img/background.png' style={this.getBgImageStyle()} fadeIn={true} />
-                <Group style={this.getGroupStyle()}>
-                    <Counter count={this.state.count} />
+                <Group style={this.getGroupStyle()} onClick={this.onClickCanvas.bind(this)} onTouchStart={this.onClickCanvas.bind(this)}>
+                    <Counter ref="counter" count={this.state.count} />
                     <Octopus ref="octopus" reverse={this.props.setting.reverseGravity} canvasHeight={this.props.canvasHeight}/> 
                     {this.state.pipes.map(
                         (pipe) => <Pipe ref={pipe.id} key={pipe.id} topHeight={pipe.topHeight} bottomHeight={pipe.bottomHeight} pipeInterval={pipe.pipeInterval} canvasWidth={pipe.canvasWidth} gapHeight={pipe.gapHeight}/>

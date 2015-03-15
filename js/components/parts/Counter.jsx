@@ -20,6 +20,7 @@ export default class Counter extends React.Component {
             lineHeight: 28,
             height: 38,
             marginTop: 20,
+            zIndex: 10,
             color: '#fff',
             textAlign: 'center'
         }

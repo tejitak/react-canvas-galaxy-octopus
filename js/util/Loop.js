@@ -5,20 +5,40 @@ var w = window,
 export default class Loop {
 
     constructor(callback) {
-        this.callback = callback;
+        this._callback = callback;
     }
 
     start() {
         // keep loop while the callback returns true
-        var keep = this.callback();
+        this._startTime = Date.now()
+        this._loop()
+    }
+
+    _loop() {
+        if(!this._callback){ return }
+        var keep = this._callback()
         if(keep) {
-            this._timer = raf(this.start.bind(this));
+            var exec = ()=>{
+                this._timer = raf(this._loop.bind(this));
+            }
+            // for promise
+            if(keep.then){
+                keep.then(exec)
+            }else{
+                exec()
+            }
         }
     }
 
     end() {
         if(this._timer) {
-            caf(this._timer);
+            caf(this._timer)
+            this._timer = null
         }
+        this._startTime = null
+    }
+
+    timeDiff() {
+        return Date.now() - this._startTime
     }
 }

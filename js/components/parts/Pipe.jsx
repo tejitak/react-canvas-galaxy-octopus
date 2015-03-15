@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactCanvas from 'react-canvas'
-import $ from 'jquery'
+import Loop from '../../util/Loop'
 
 var Group = ReactCanvas.Group
 var Image = ReactCanvas.Image;
@@ -10,28 +10,28 @@ export default class Pipe extends React.Component {
         super(props)
         // initialize state
         this.state = {
-            x: this.props.canvasWidth / 2
+            x: this.props.canvasWidth
         }
     }
 
     componentDidMount() {
-        this._animationStartTime = Date.now()
-        this._pendingAnimationFrame = requestAnimationFrame(this.stepThroughAnimation.bind(this))
+        this._loop = new Loop(this.move.bind(this))
+        this._loop.start()
     }
 
     componentWillUnmount() {
         this.stop()
     }
 
-    stepThroughAnimation() {
-        var progress = (Date.now() - this._animationStartTime) / (this.props.pipeInterval * 2),
-            x = this.props.canvasWidth - (progress * this.props.canvasWidth)
-        this.setState({x: x}, ()=>{
-            console.log(x)
-            if(x > 0) {
-                this._pendingAnimationFrame = requestAnimationFrame(this.stepThroughAnimation.bind(this))
-            }
-        })
+    move() {
+        var progress = this._loop.timeDiff() / (this.props.pipeInterval * 2),
+            pw = this.props.pipeWidth,
+            distance = this.props.canvasWidth + pw,
+            x = (distance - (progress * distance)) - pw
+        if(x > -pw) {
+            this.setState({x: x})
+            return true
+        }
     }
 
     getGapPos() {
@@ -44,13 +44,10 @@ export default class Pipe extends React.Component {
     }
 
     stop() {
-        if(this._pendingAnimationFrame) {
-            cancelAnimationFrame(this._pendingAnimationFrame)
-        }
+        this._loop.end()
     }
 
     getGroupStyle() {
-        console.log(this.state.x)
         return {
             position: 'absolute',
             left: this.state.x,
@@ -64,7 +61,7 @@ export default class Pipe extends React.Component {
         return {
             position: 'absolute',
             left: this.state.x,
-            bottom: (this.props.bottomHeight + this.props.gapHeight) / 2,
+            bottom: (this.props.bottomHeight + this.props.gapHeight),
             width: this.props.pipeWidth,
             height: this.props.pipeHeight
         }
@@ -74,7 +71,7 @@ export default class Pipe extends React.Component {
         return {
             position: 'absolute',
             left: this.state.x,
-            top: (this.props.topHeight + this.props.gapHeight) / 2,
+            top: (this.props.topHeight + this.props.gapHeight),
             width: this.props.pipeWidth,
             height: this.props.pipeHeight
         }
