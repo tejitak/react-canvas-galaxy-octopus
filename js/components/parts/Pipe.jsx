@@ -10,7 +10,7 @@ export default class Pipe extends React.Component {
         super(props)
         // initialize state
         this.state = {
-            x: this.props.canvasWidth
+            x: props.canvasWidth
         }
         // react state animation wrapper
         this._animate = new Animate(this)

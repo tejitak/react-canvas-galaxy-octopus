@@ -1,5 +1,7 @@
 import React from 'react'
 import ReactCanvas from 'react-canvas'
+import ImageCache from 'react-canvas/lib/ImageCache';
+import CanvasUtil from 'react-canvas/lib/CanvasUtils'
 import Animate from '../../util/Animate'
 
 var Image = ReactCanvas.Image;
@@ -8,8 +10,8 @@ export default class Octopus extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            left: this.props.initLeft,
-            top: this.props.initTop
+            left: props.initLeft,
+            top: props.initTop
         }
         // react state animation wrapper
         this._animate = new Animate(this)
@@ -37,8 +39,12 @@ export default class Octopus extends React.Component {
             var pos = this.getPos(),
                 canvasH = this.props.canvasHeight,
                 reverse = this.props.reverse,
+                operator = reverse ? -1 : 1,
                 distance = reverse ? pos.t : canvasH - pos.t - pos.h,
-                totalFallTime = 1000/*time for fall*/ * distance / canvasH
+                totalFallTime = 1000/*time for fall*/ * distance / canvasH,
+                image = ImageCache.get(this.props.src)
+            // FIXME: rotate by temp patch for CanvasUtil.drawImage
+            image.rotate = 90 * operator
             this._animate
                 .stop()
                 .linear('top', reverse ? 0 : canvasH - pos.h, totalFallTime)
@@ -49,11 +55,16 @@ export default class Octopus extends React.Component {
     jump() {
         return new Promise((resolve, reject) => {
             var distance = 60, 
-                operator = this.props.reverse ? -1 : 1
+                operator = this.props.reverse ? -1 : 1,
+                pos = this.getPos(),
+                image = ImageCache.get(this.props.src)
+            // FIXME: rotate by temp patch for CanvasUtil.drawImage
+            image.rotate = -20 * operator
             this._animate
                 .stop()
                 .linear('top', this.state.top - (distance * operator), 200)
                 .then(() => {
+                    image.rotate = 0
                     this._animate.linear('top', this.state.top + (distance * operator), 300)
                         .then(() => {
                             this.fall().then(resolve)
@@ -79,11 +90,12 @@ export default class Octopus extends React.Component {
     }
 
     render() {
-        return <Image src='../img/octopus.png' style={this.getImageStyle(2)} fadeIn={true} />
+        return <Image src={this.props.src} style={this.getImageStyle(2)} fadeIn={true} />
     }
 }
     
 Octopus.defaultProps = {
+    src: "../img/octopus.png",
     initLeft: 130,
     initTop: 225 - 28,
     width: 40,

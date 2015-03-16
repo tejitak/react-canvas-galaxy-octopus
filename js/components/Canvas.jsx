@@ -73,6 +73,8 @@ export default class Canvas extends React.Component {
         e.preventDefault();
         switch(this.state.phase) {
             case 'INTRO':
+                // set context for octopus
+                this.refs.octopus.canvasContext = this.refs.surface.getContext()
                 this.setState({phase: 'RUNNING', count: 0, pipes: []}, () => {
                     // move to init position
                     this.refs.octopus.clear().then(() => {
@@ -150,7 +152,7 @@ export default class Canvas extends React.Component {
 
     render() {
         return (
-            <Surface top={0} left={0} width={this.props.canvasWidth} height={this.props.canvasHeight} enableCSSLayout={true}>
+            <Surface ref="surface" top={0} left={0} width={this.props.canvasWidth} height={this.props.canvasHeight} enableCSSLayout={true}>
                 <Image src='../img/background.png' style={this.getBgImageStyle()} fadeIn={true} />
                 <Group style={this.getGroupStyle()} onClick={this.onClickCanvas.bind(this)} onTouchStart={this.onClickCanvas.bind(this)}>
                     <Counter ref="counter" count={this.state.count} />
