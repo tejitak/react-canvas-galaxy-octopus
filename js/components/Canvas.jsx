@@ -28,7 +28,7 @@ export default class Canvas extends React.Component {
     watchPos() {
         if(this.state.phase === 'RUNNING'){
             var res = this.detectCollision()
-            if(!res){ return true }
+            if(!res || this.props.setting.noHit){ return true }
             if(res.state === 'HIT'){
                 // collision detected & game end
                 this._fail()
@@ -73,13 +73,11 @@ export default class Canvas extends React.Component {
         e.preventDefault();
         switch(this.state.phase) {
             case 'INTRO':
-                // set context for octopus
-                this.refs.octopus.canvasContext = this.refs.surface.getContext()
                 this.setState({phase: 'RUNNING', count: 0, pipes: []}, () => {
                     // move to init position
                     this.refs.octopus.clear().then(() => {
                         this._loop.start()
-                        this._pipeTimer = setInterval(this._createPipe.bind(this), this.props.pipeInterval)
+                        this._pipeTimer = setInterval(this._createPipe.bind(this), this.props.setting.pipeInterval)
                         this.refs.octopus.jump()
                     })
                 })
@@ -108,7 +106,7 @@ export default class Canvas extends React.Component {
             topHeight: topHeight,
             bottomHeight: bottomHeight,
             gapHeight: this.props.gapHeight,
-            pipeInterval: this.props.pipeInterval,
+            pipeInterval: this.props.setting.pipeInterval,
             canvasWidth: this.props.canvasWidth
         })})
     }
@@ -126,6 +124,10 @@ export default class Canvas extends React.Component {
     // update counter
     _incrementCount() {
         this.setState({count: this.state.count + 1})
+    }
+
+    reset() {
+        this._fail()
     }
 
     getGroupStyle() {
@@ -170,6 +172,5 @@ export default class Canvas extends React.Component {
 Canvas.defaultProps = {
     canvasWidth: 350,
     canvasHeight: 450,
-    pipeInterval: 1600,
     gapHeight: 120
 }

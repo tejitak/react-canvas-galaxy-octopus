@@ -90,7 +90,7 @@ export default class Octopus extends React.Component {
     }
 
     render() {
-        return <Image src={this.props.src} style={this.getImageStyle(2)} fadeIn={true} />
+        return <Image src={this.props.src} style={this.getImageStyle()} fadeIn={true} />
     }
 }
     

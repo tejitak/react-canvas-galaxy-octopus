@@ -22,7 +22,7 @@ export default class Animate {
      */
     linear(prop, end, duration) {
         return new Promise((resolve, reject) => {
-            var begin = this._component.state[prop]
+            var begin = this._component.state[prop] || this._component[prop]
             this._start(() => {
                 return this._linear(prop, begin, end, duration, resolve)
             })
@@ -37,9 +37,14 @@ export default class Animate {
             value = begin + diff * operator
         if(progress < 1) {
             // set new react state
-            var state = {}
-            state[prop] = value
-            this._component.setState(state)
+            if(this._component.state[prop]){
+                var state = {}
+                state[prop] = value
+                this._component.setState(state)
+            }else{
+                this._component[prop] = value
+                this._component.forceUpdate()
+            }
             // keep the loop
             return true
         }else{
