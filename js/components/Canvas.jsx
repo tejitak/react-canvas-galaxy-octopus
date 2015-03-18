@@ -134,7 +134,7 @@ export default class Canvas extends React.Component {
             left: 0,
             top: 0,
             width: this.props.canvasWidth,
-            height: this.props.canvasHeight
+            height: this.props.canvasHeight * 2/* FIXME: not sure why but for touch start detection */
         }
     }
 
@@ -153,8 +153,8 @@ export default class Canvas extends React.Component {
     render() {
         return (
             <Surface ref="surface" top={0} left={0} width={this.props.canvasWidth} height={this.props.canvasHeight} enableCSSLayout={true}>
-                <Image src='../img/background.png' style={this.getBgImageStyle()} fadeIn={true} />
-                <Group style={this.getGroupStyle()} onClick={this.onClickCanvas.bind(this)} onTouchStart={this.onClickCanvas.bind(this)}>
+                <Image src='../img/background.png' style={this.getBgImageStyle()} fadeIn={true}/>
+                <Group style={this.getGroupStyle()}  onClick={this.onClickCanvas.bind(this)} onTouchStart={this.onClickCanvas.bind(this)}>
                     <Counter ref="counter" count={this.state.count} />
                     <Octopus ref="octopus" reverse={this.props.setting.reverseGravity} canvasHeight={this.props.canvasHeight}/> 
                     {this.state.pipes.map(

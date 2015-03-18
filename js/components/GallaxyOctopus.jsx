@@ -41,7 +41,7 @@ export default class GallaxyOctopus extends React.Component {
     render() {
         return (
             <div>
-                <Canvas setting={this.state.setting} style={{cursor:'pointer'}} />
+                <Canvas setting={this.state.setting} />
                 <Setting setting={this.state.setting} onChangeSetting={this.onChangeSetting.bind(this)} />
             </div>
         )
