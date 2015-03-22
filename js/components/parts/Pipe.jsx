@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactCanvas from 'react-canvas'
-import Animate from '../../util/Animate'
+import ReactStateAnimation from 'react-state-animation'
 
 var Group = ReactCanvas.Group
 var Image = ReactCanvas.Image;
@@ -13,7 +13,7 @@ export default class Pipe extends React.Component {
             x: props.canvasWidth
         }
         // react state animation wrapper
-        this._animate = new Animate(this)
+        this._animate = new ReactStateAnimation(this)
     }
 
     componentDidMount() {

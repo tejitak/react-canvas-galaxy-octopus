@@ -9,7 +9,8 @@
   "author": "tejitak",
   "license": "MIT",
   "dependencies": {
-    "babel-runtime": "^4.7.5"
+    "babel-runtime": "^4.7.5",
+    "react-state-animation": "0.0.4"
   },
   "devDependencies": {
     "babel": "^4.7.5",

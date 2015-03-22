@@ -2,7 +2,7 @@ import React from 'react'
 import ReactCanvas from 'react-canvas'
 import ImageCache from 'react-canvas/lib/ImageCache';
 import CanvasUtil from 'react-canvas/lib/CanvasUtils'
-import Animate from '../../util/Animate'
+import ReactStateAnimation from 'react-state-animation'
 
 var Image = ReactCanvas.Image;
 
@@ -14,7 +14,7 @@ export default class Octopus extends React.Component {
             top: props.initTop
         }
         // react state animation wrapper
-        this._animate = new Animate(this)
+        this._animate = new ReactStateAnimation(this)
     }
 
     clear() {
