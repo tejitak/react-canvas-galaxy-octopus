@@ -1,10 +1,11 @@
 import React from 'react'
 import ReactCanvas from 'react-canvas'
-import Loop from 'react-state-animation/src/Loop'
+import ReactStateAnimation from 'react-state-animation'
 import Counter from './parts/Counter'
 import Octopus from './parts/Octopus'
 import Pipe from './parts/Pipe'
 
+var Loop = ReactStateAnimation.Loop
 var Surface = ReactCanvas.Surface
 var Group = ReactCanvas.Group
 var Image = ReactCanvas.Image

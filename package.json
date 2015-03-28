@@ -9,8 +9,7 @@
   "author": "tejitak",
   "license": "MIT",
   "dependencies": {
-    "babel-runtime": "^4.7.5",
-    "react-state-animation": "0.0.4"
+    "babel-runtime": "^4.7.5"
   },
   "devDependencies": {
     "babel": "^4.7.5",
@@ -24,6 +23,7 @@
     "gulp-webpack": "^1.2.0",
     "react": "^0.13.0",
     "react-canvas": "0.0.1",
+    "react-state-animation": "0.0.5",
     "webpack": "^1.5.3",
     "yargs": "^3.5.4"
   }
