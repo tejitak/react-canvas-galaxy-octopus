@@ -45,10 +45,14 @@ export default class Octopus extends React.Component {
                 image = ImageCache.get(this.props.src)
             // FIXME: rotate by temp patch for CanvasUtil.drawImage
             image.rotate = 90 * operator
-            this._animate
-                .stop()
-                .linear('top', reverse ? 0 : canvasH - pos.h, totalFallTime)
-                .then(resolve)
+            if(distance < 10){
+                resolve()
+            }else{
+                this._animate
+                    .stop()
+                    .linear('top', reverse ? 0 : canvasH - pos.h, totalFallTime)
+                    .then(resolve)
+            }
         })
     }
 
